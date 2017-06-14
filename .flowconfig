@@ -25,6 +25,7 @@ flow/
 emoji=true
 
 module.system=haste
+module.use_strict=true
 
 experimental.strict_type_args=true
 
@@ -44,4 +45,4 @@ suppress_comment=\\(.\\|\n\\)*\\$FlowExpectedError
 unsafe.enable_getters_and_setters=true
 
 [version]
-^0.45.0
+^0.48.0
