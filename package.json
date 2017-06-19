@@ -7,28 +7,58 @@
 		"start": "node node_modules/react-native/local-cli/cli.js start",
 		"test": "jest",
 		"build": "babel src/ -d lib/",
-    "prepublish": "yarn run build",
+		"prepublish": "yarn run build",
 		"flow": "flow",
-		"flow-stop": "flow stop"
+		"flow-stop": "flow stop",
+		"lint": "eslint --fix *.js"
 	},
+	"author": "Mingloan Chan",
+	"license": "MIT",
 	"repository": {
-		"type" : "git",
-		"url" : "https://github.com/MingLoan/RNPhotoPicker"
-  },
+		"type": "git",
+		"url": "https://github.com/MingLoan/RNPhotoPicker"
+	},
 	"dependencies": {
+		"babel-plugin-transform-remove-console": "^6.8.4",
+		"prop-types": "^15.5.10",
 		"react": "16.0.0-alpha.12",
-		"react-native": "0.45.1"
+		"react-native": "0.45.1",
+		"react-native-camera": "https://github.com/lwansbrough/react-native-camera.git",
+		"react-native-fetch-blob": "^0.10.5",
+		"react-native-image-cropper": "^0.3.0",
+		"react-native-image-resizer": "^0.1.1",
+		"react-native-permissions": "^0.2.7",
+		"react-native-vector-icons": "^4.2.0"
 	},
 	"devDependencies": {
 		"babel-cli": "^6.24.1",
+		"babel-eslint": "^7.2.3",
 		"babel-jest": "20.0.3",
 		"babel-preset-flow": "^6.23.0",
 		"babel-preset-react-native": "1.9.2",
+		"eslint": "^4.0.0",
+		"eslint-config-airbnb": "^15.0.1",
+		"eslint-plugin-import": "^2.3.0",
+		"eslint-plugin-jsx-a11y": "^5.0.3",
+		"eslint-plugin-react": "^7.1.0",
 		"flow-bin": "^0.48.0",
 		"jest": "20.0.4",
 		"react-test-renderer": "16.0.0-alpha.12"
 	},
 	"jest": {
 		"preset": "react-native"
-	}
+	},
+	"keywords": [
+		"react-native",
+		"ios",
+		"android",
+		"image-picker",
+		"photo-picker",
+		"image-cropper",
+		"photo-cropper",
+		"camera",
+		"image",
+		"crop",
+		"camera-roll"
+	]
 }
