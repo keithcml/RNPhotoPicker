@@ -10,6 +10,7 @@ target 'RNPhotoPicker' do
   pod 'react-native-fetch-blob', :path => '../node_modules/react-native-fetch-blob'
   pod 'ReactNativePermissions', :path => '../node_modules/react-native-permissions'
   pod 'react-native-image-resizer', :path => '../node_modules/react-native-image-resizer'
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
   pod 'Yoga', :path => '../node_modules/react-native/ReactCommon/yoga/Yoga.podspec'
   pod 'React', :path => '../node_modules/react-native', :subspecs => [
   'Core',

@@ -1,6 +1,8 @@
 PODS:
   - React (0.45.1):
     - React/Core (= 0.45.1)
+  - react-native-camera (0.9.4):
+    - React
   - react-native-fetch-blob (0.10.3-beta.1):
     - React/Core
   - react-native-image-resizer (0.1.1):
@@ -44,6 +46,7 @@ PODS:
   - Yoga (0.45.1.React)
 
 DEPENDENCIES:
+  - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-fetch-blob (from `../node_modules/react-native-fetch-blob`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - React/BatchedBridge (from `../node_modules/react-native`)
@@ -66,6 +69,8 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   React:
     :path: ../node_modules/react-native
+  react-native-camera:
+    :path: ../node_modules/react-native-camera
   react-native-fetch-blob:
     :path: ../node_modules/react-native-fetch-blob
   react-native-image-resizer:
@@ -79,12 +84,13 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   React: 0c9191a8b0c843d7004f950ac6b5f6cba9d125c7
+  react-native-camera: 267127fbb4a2960d3f97b5ca8a33339620e3f6b3
   react-native-fetch-blob: cf03e85ac13174bd415f61193911567472f86d69
   react-native-image-resizer: cc3279e34f0aa32cad83921fe70f5de5ac270522
   ReactNativePermissions: 9685eca85c12e071edd33aeef398252f5bbc4431
   RNVectorIcons: 6d98d83e944d15014d8071dd9819beb094c61133
   Yoga: 89c8738d42a0b46a113acb4e574336d61cba2985
 
-PODFILE CHECKSUM: 9e98d2de6865b5495046e2b390006ce8ab114ab3
+PODFILE CHECKSUM: c326b95145043f4751e560297b0eb2d835635d4e
 
 COCOAPODS: 1.2.1

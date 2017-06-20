@@ -14,7 +14,10 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native'
+import { Modal } from './Modal'
 import { Photo } from './Photo'
+import { CameraIcon } from './CameraIcon'
+import { CameraView } from './CameraView'
 import ImageResizer from 'react-native-image-resizer'
 import * as Permissions from './Permissions'
 
@@ -152,44 +155,6 @@ class CameraRollList extends Component {
     })
   }
 
-  _renderHeader = () => {
-    // const pickerOptions = {
-    //   maxWidth: 800,
-    //   maxHeight: 800,
-    //   mediaType: 'photo',
-    //   noData: true,
-    // };
-    return(
-      <TouchableOpacity
-        style={{ padding: 1, alignSelf: 'stretch', height: GRID_SIZE }}
-        onPress={() => {
-          let count = 0
-          for (let key of Object.keys(this.state.selected)) {
-            if (this.state.selected[key] == true) {
-              count = count + 1
-            }
-          }
-          if (count >= this.props.maxSelection) {
-            Alert.alert(
-              'You select too many photos',
-              `You cannot select/capture more than ${this.props.maxSelection} photos.`,
-              [ { text: 'Got it', onPress: () => {}, style: 'cancel' } ]
-            )
-            return
-          }
-          // openCamera(pickerOptions, (response) => {
-          //   if (response.hasOwnProperty('didCancel') && response.didCancel) {
-          //     return;
-          //   }
-          //   this.props.onFinishCapture(response.uri)
-          // });
-        }}
-      >
-        <View style={{ height: 4 }} />
-        <Text style={{ color: 'lightgray', fontSize: 13 }} >Take Photo</Text>
-      </TouchableOpacity>
-    );
-  }
   _renderFooter = () => {
     if (this.state.noPhotoPermission) {
       return(
@@ -217,13 +182,61 @@ class CameraRollList extends Component {
     }
     return <View style={{ height: 40 }} />;
   }
+  _renderCameraButton = () => {
+    // const pickerOptions = {
+    //   maxWidth: 800,
+    //   maxHeight: 800,
+    //   mediaType: 'photo',
+    //   noData: true,
+    // };
+    return(
+      <TouchableOpacity
+        activeOpacity={0.9}
+        style={{
+          width: GRID_SIZE, height: GRID_SIZE,
+          backgroundColor: 'black',
+          justifyContent: 'center', alignItems: 'center',
+          marginRight: 1,
+        }}
+        onPress={() => {
+          let count = 0
+          for (let key of Object.keys(this.state.selected)) {
+            if (this.state.selected[key] == true) {
+              count = count + 1
+            }
+          }
+          if (count >= this.props.maxSelection) {
+            Alert.alert(
+              'You select too many photos',
+              `You cannot select/capture more than ${this.props.maxSelection} photos.`,
+              [ { text: 'Got it', onPress: () => {}, style: 'cancel' } ]
+            )
+            return
+          }
+          this._cameraView.show()
+          // openCamera(pickerOptions, (response) => {
+          //   if (response.hasOwnProperty('didCancel') && response.didCancel) {
+          //     return;
+          //   }
+          //   this.props.onFinishCapture(response.uri)
+          // });
+        }}
+      >
+        <CameraIcon />
+      </TouchableOpacity>
+    );
+  }
   _renderItem = ({ item, index }) => {
+    if (index === 0 && this.props.hasCamera) {
+      return <View>{this._renderCameraButton()}</View>
+    }
     return(
       <Photo
         { ...this.props.props }
         size={GRID_SIZE}
         containerStyle={{
           width: GRID_SIZE, height: GRID_SIZE,
+          marginRight: 1,
         }}
         node={item.node}
         isSelected={
@@ -279,13 +292,20 @@ class CameraRollList extends Component {
           numColumns={4}
           columnWrapperStyle={{
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            //justifyContent: 'space-between',
             marginBottom: 1,
           }}
           ListHeaderComponent={this._renderHeader}
           ListFooterComponent={this._renderFooter}
           renderItem={this._renderItem}
-          data={this.state.photos}
+          data={[
+            {
+              node: {
+                image: {
+                  uri: 'camera'
+                }
+              }
+            }, ...this.state.photos]}
           keyExtractor={ (item, index) => item.node.image.uri }
           onEndReachedThreshold={0.5}
           onEndReached={ () => {
@@ -294,6 +314,25 @@ class CameraRollList extends Component {
             }
           }}
         />
+        <Modal
+          ref={ (camera) => {this._cameraView = camera} }
+          dismissOnHardwareBackPress
+          contextOpacity={0.5}
+          contextColor='#000'
+          dismissOnTouchOutside
+          contextOnPress={() => {}}
+          animationDuration={300}
+          {...this.props}
+        >
+          <CameraView
+            onClose={() => {
+              this._cameraView.dismiss()
+            }}
+            onFinish={() => {
+
+            }}
+          />
+        </Modal>
       </View>
     );
   }

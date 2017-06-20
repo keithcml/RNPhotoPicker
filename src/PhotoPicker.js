@@ -12,6 +12,7 @@ import {
   BackHandler,
   Platform,
 } from 'react-native'
+import { TopBar } from './TopBar'
 import CameraRollList from './CameraRollList'
 import PresentationContext from './PresentationContext'
 
@@ -19,7 +20,7 @@ const BACK_PRESS_EVENT: string = 'hardwareBackPress'
 
 class PhotoPicker extends Component {
   state: {
-    pickerState: ('closed' | 'opened' | 'closing' | 'opening'),
+    pickerState: ('closed' | 'opened' | 'animating'),
     translationAnimated: Object,
   }
 
@@ -34,20 +35,9 @@ class PhotoPicker extends Component {
   }
 
   componentDidMount() {
-    const { show, mode } = this.props
-    if (show && mode === 'modal') {
-      this.show()
+    const { mode } = this.props
+    if (mode === 'modal') {
       BackHandler.addEventListener(BACK_PRESS_EVENT, this._backEventHandler)
-    }
-  }
-
-  componentWillReceiveProps(nextProps: DialogType) {
-    if (this.props.show !== nextProps.show) {
-      if (nextProps.show) {
-        this.show()
-      } else {
-        this.dismiss()
-      }
     }
   }
 
@@ -57,7 +47,7 @@ class PhotoPicker extends Component {
 
   _backEventHandler = (): boolean => {
     const { dismissOnHardwareBackPress } = this.props;
-    const { dialogState } = this.state;
+    const { pickerState } = this.state;
     if (dismissOnHardwareBackPress && pickerState === 'opened') {
       this.dismiss()
       return true
@@ -66,12 +56,11 @@ class PhotoPicker extends Component {
   }
 
   _togglePicker = (flag: number, callback?: Function = () => {}) => {
-    const pickerState: string = flag === 0 ? 'closed' : 'opened'
-    const toValue = flag
+    const pickerState: string = flag === 0 ? 'animating' : 'opened'
+    const toValue: number = flag
     this.setState({
       pickerState
     }, () => {
-      //this.y_translate.setValue(0);
       Animated.timing(
         this.state.translationAnimated,
         {
@@ -82,6 +71,11 @@ class PhotoPicker extends Component {
             const rollBack = flag === 0 ? 1 : 0
             this.state.translationAnimated.setValue(rollBack)
           }
+          if (pickerState === 'animating') {
+            this.setState({
+              pickerState: 'closed'
+            })
+          }
         });
     });
   }
@@ -91,8 +85,7 @@ class PhotoPicker extends Component {
     if (!showTopBar) return null
     if (topBarComponent === null) {
       return (
-        <View style={styles.defaultTopBar} >
-        </View>
+        <TopBar {...this.props} onClose={() => {this.dismiss()}} />
       )
     }
     else {
@@ -111,27 +104,30 @@ class PhotoPicker extends Component {
   }
 
   render() {
-    const { mode } = this.props
+    const { mode, containerStyle } = this.props
     if (mode === 'child') {
       return(
-        <CameraRollList { ...this.props } />
+        <View style={containerStyle} >
+          <CameraRollList { ...this.props } />
+        </View>
       )
     }
     const { width, height, animationDuration, contextColor, contextOpacity, show, contextOnPress } = this.props
-    const { translationAnimated } = this.state
+    const { translationAnimated, pickerState } = this.state
     const screenHeight: number = Dimensions.get('window').height
+    const hidden = pickerState === 'closed' ? styles.hidden : null
     const yPosition = translationAnimated.interpolate({
         inputRange: [0, 1],
         outputRange: [screenHeight, 0],
         extrapolate: 'clamp'
     })
     return(
-      <View style={[styles.container, hidden]}>
+      <View style={[styles.container, containerStyle, hidden]}>
         <PresentationContext
           backgroundColor={contextColor}
           opacity={contextOpacity}
           animationDuration={animationDuration}
-          showContext={show}
+          showContext={pickerState === 'opened'}
           onPress={contextOnPress}
         />
         <Animated.View
@@ -156,6 +152,7 @@ PhotoPicker.propTypes = {
   mode: PropTypes.oneOf(['child', 'modal']),
   showTopBar: PropTypes.bool,
   topBarComponent: PropTypes.element,
+  containerStyle: PropTypes.object,
   // modal mode props
   // presentation context
   contextOpacity: PropTypes.number,
@@ -169,11 +166,11 @@ PhotoPicker.propTypes = {
   onShowed: PropTypes.func,
   onDismissed: PropTypes.func,
   show: PropTypes.bool,
-
+  // picker props
+  outputImageAspectRatio: PropTypes.number,
+  hasCamera: PropTypes.bool,
   maxSelection: PropTypes.number,
   onFinishCapture: PropTypes.func,
-  // crop
-  cropRatio: PropTypes.number,
 }
 PhotoPicker.defaultProps = {
   // global props
@@ -181,12 +178,13 @@ PhotoPicker.defaultProps = {
   mode: 'modal',
   showTopBar: true,
   topBarComponent: null,
+  containerStyle: {},
   // modal mode props
   contextOpacity: 0.5,
   contextColor: '#000',
   dismissOnTouchOutside: true,
   contextOnPress: () => {},
-  animationDuration: 150,
+  animationDuration: 300,
   width: Dimensions.get('window').width,
   height: Dimensions.get('window').height,
   dismissOnHardwareBackPress: true,
@@ -194,10 +192,10 @@ PhotoPicker.defaultProps = {
   onDismissed: () => {},
   show: false,
   // picker props
+  outputImageAspectRatio: 1,
+  hasCamera: true,
   maxSelection: 1,
   onFinishCapture: () => {},
-
-  cropRatio: 1,
 }
 export default PhotoPicker
 
@@ -217,13 +215,6 @@ const styles = StyleSheet.create({
   pickerContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'transparent',
-  },
-  defaultTopBar: {
-    width: Dimensions.get('window').width,
-    height: Platform.OS === 'ios' ? 64 : 50,
     backgroundColor: 'white',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
   },
 });
