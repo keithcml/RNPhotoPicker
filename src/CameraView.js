@@ -25,7 +25,7 @@ export class CameraView extends Component {
   _takePicture = () => {
     const options = {};
     //options.location = ...
-    this.camera.capture({
+    this._camera.capture({
       metadata: options
     })
     .then((data) => console.log(data))
@@ -69,10 +69,12 @@ export class CameraView extends Component {
   }
 }
 CameraView.propTypes = {
+  outputImageAspectRatio: PropTypes.number,
   onClose: PropTypes.func.isRequired,
   onFinish: PropTypes.func.isRequired,
 }
 CameraView.defaultProps = {
+  outputImageAspectRatio: 1,
   onClose: () => {},
   onFinish: () => {},
 }

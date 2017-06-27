@@ -13,8 +13,8 @@ import {
   Alert,
   ActivityIndicator,
   TouchableOpacity,
+  Modal,
 } from 'react-native'
-import { Modal } from './Modal'
 import { Photo } from './Photo'
 import { CameraIcon } from './CameraIcon'
 import { CameraView } from './CameraView'
@@ -34,6 +34,7 @@ class CameraRollList extends Component {
     photos: Array<string>,
     selected: {| [string]: boolean |},
     noPhotoPermission: boolean,
+    isTakingPhoto: boolean,
   }
 
   constructor(props) {
@@ -46,11 +47,15 @@ class CameraRollList extends Component {
       photos: [],
       selected: {},
       noPhotoPermission: false,
+      isTakingPhoto: false,
     }
     this._getPhotos()
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.isTakingPhoto !== this.state.isTakingPhoto) {
+      return true
+    }
     if (nextState.photos === this.state.photos &&
         nextState.noPhotoPermission === this.state.noPhotoPermission) {
           return false
@@ -213,7 +218,11 @@ class CameraRollList extends Component {
             )
             return
           }
-          this._cameraView.show()
+          console.log('open');
+          this.setState({
+            isTakingPhoto: true,
+          })
+          //this._cameraView.show()
           // openCamera(pickerOptions, (response) => {
           //   if (response.hasOwnProperty('didCancel') && response.didCancel) {
           //     return;
@@ -288,6 +297,28 @@ class CameraRollList extends Component {
   render() {
     return(
       <View style={{ flex: 1 }} >
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.isTakingPhoto}
+          onRequestClose={() => {
+            alert("Modal has been closed.")
+          }}
+        >
+          <CameraView
+            width={width}
+            {...this.props}
+            onClose={() => {
+              console.log('close')
+              this.setState({
+                isTakingPhoto: false,
+              })
+            }}
+            onFinish={() => {
+
+            }}
+          />
+        </Modal>
         <FlatList
           numColumns={4}
           columnWrapperStyle={{
@@ -314,29 +345,22 @@ class CameraRollList extends Component {
             }
           }}
         />
-        <Modal
-          ref={ (camera) => {this._cameraView = camera} }
-          dismissOnHardwareBackPress
-          contextOpacity={0.5}
-          contextColor='#000'
-          dismissOnTouchOutside
-          contextOnPress={() => {}}
-          animationDuration={300}
-          {...this.props}
-        >
-          <CameraView
-            onClose={() => {
-              this._cameraView.dismiss()
-            }}
-            onFinish={() => {
 
-            }}
-          />
-        </Modal>
       </View>
     );
   }
 }
+
+// <Modal
+//   ref={ (camera) => {this._cameraView = camera} }
+//   dismissOnHardwareBackPress
+//   contextOpacity={0.5}
+//   contextColor='#000'
+//   dismissOnTouchOutside
+//   contextOnPress={() => {}}
+//   animationDuration={300}
+//   {...this.props}
+// >
 
 CameraRollList.propTypes = {
   maxSelection: PropTypes.number,
