@@ -7,7 +7,8 @@ target 'RNPhotoPicker' do
 
   # Pods for RNPhotoPicker
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-  pod 'react-native-fetch-blob', :path => '../node_modules/react-native-fetch-blob'
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'RNGL', :path => '../node_modules/gl-react-native'
   pod 'ReactNativePermissions', :path => '../node_modules/react-native-permissions'
   pod 'react-native-image-resizer', :path => '../node_modules/react-native-image-resizer'
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'

@@ -11,8 +11,10 @@ import {
   Dimensions,
   BackHandler,
   Platform,
+  Modal,
 } from 'react-native'
 import { TopBar } from './TopBar'
+import { CropView } from './CropView'
 import CameraRollList from './CameraRollList'
 import PresentationContext from './PresentationContext'
 
@@ -31,6 +33,9 @@ class PhotoPicker extends Component {
     this.state = {
       pickerState,
       translationAnimated: new Animated.Value(0),
+      isCroppingPhoto: false,
+      isTakingPhoto: false,
+      cropImagePath: null,
     }
   }
 
@@ -85,7 +90,11 @@ class PhotoPicker extends Component {
     if (!showTopBar) return null
     if (topBarComponent === null) {
       return (
-        <TopBar {...this.props} onClose={() => {this.dismiss()}} />
+        <TopBar
+          {...this.props}
+          onClose={() => {this.dismiss()}}
+          onDone={() => {this.dismiss()}}
+        />
       )
     }
     else {
@@ -108,7 +117,15 @@ class PhotoPicker extends Component {
     if (mode === 'child') {
       return(
         <View style={containerStyle} >
-          <CameraRollList { ...this.props } />
+          <CameraRollList
+            { ...this.props }
+            onCrop={ (uri) => {
+              this.setState({
+                isTakingPhoto: true,
+                cropImagePath: uri,
+              })
+            }}
+          />
         </View>
       )
     }
@@ -141,6 +158,25 @@ class PhotoPicker extends Component {
             <CameraRollList { ...this.props } />
           </View>
         </Animated.View>
+
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.isCroppingPhoto}
+          onRequestClose={() => {
+            alert("Modal has been closed.")
+          }}
+        >
+          <CropView
+            cropRatio={this.props.outputImageAspectRatio}
+            imagePath={this.state.cropImagePath}
+            {...this.props}
+            onFinishCropping={(base64Data) => {
+
+            }}
+          />
+        </Modal>
+
       </View>
     )
   }

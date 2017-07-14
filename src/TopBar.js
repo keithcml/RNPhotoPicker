@@ -1,6 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   StyleSheet,
   Platform,
@@ -17,10 +18,22 @@ export class TopBar extends Component {
         <TouchableOpacity style={styles.touchable} activeOpacity={0.7} onPress={this.props.onClose} >
           <Text style={[styles.touchableText, { color: this.props.tintColor }]} >Close</Text>
         </TouchableOpacity>
+        {
+          this.props.maxSelection > 1 ? (
+            <TouchableOpacity style={styles.touchable} activeOpacity={0.7} onPress={this.props.onDone} >
+              <Text style={[styles.touchableText, { color: this.props.tintColor }]} >Done</Text>
+            </TouchableOpacity>
+          ) : null
+        }
         <View style={styles.hairline} />
       </View>
     )
   }
+}
+
+TopBar.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onDone: PropTypes.func.isRequired,
 }
 
 const styles = StyleSheet.create({

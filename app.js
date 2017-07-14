@@ -43,6 +43,8 @@ export default class RNPhotoPickerExample extends Component {
           ref={(picker => { this._picker = picker })}
           tintColor='red'
           mode='modal'
+          maxSelection={1}
+          outputImageAspectRatio={1.5}
           onShowed={() => {}}
           onDismissed={() => {}}
         />

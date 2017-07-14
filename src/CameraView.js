@@ -8,7 +8,9 @@ import {
   Dimensions,
   TouchableOpacity,
   Text,
+  Image,
 } from 'react-native'
+import RNFS from 'react-native-fs'
 import Camera from 'react-native-camera'
 import { CameraIcon } from './CameraIcon'
 const { width } = Dimensions.get('window')
@@ -18,18 +20,39 @@ export class CameraView extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      preview: false,
+      isPreviewing: false,
+      previewURI: null,
     }
   }
 
   _takePicture = () => {
-    const options = {};
-    //options.location = ...
     this._camera.capture({
-      metadata: options
+      metadata: {},
+      jpegQuality: 90,
     })
-    .then((data) => console.log(data))
+    .then(({ path, size }) => {
+      this.setState({
+        isPreviewing: true,
+        previewURI: path,
+      })
+    })
     .catch(err => console.error(err))
+  }
+
+  _onCancel = () => {
+    if (this.state.isPreviewing) {
+      this.setState({
+        isPreviewing: false,
+        previewURI: null,
+      })
+    }
+    else {
+      this.props.onClose()
+    }
+  }
+
+  _onChoose = () => {
+    this.props.onFinish(this.state.previewURI)
   }
 
   render() {
@@ -44,10 +67,21 @@ export class CameraView extends Component {
           keepAwake
           style={{ width, height }}
           aspect={Camera.constants.Aspect.fill}
+          captureTarget={Camera.constants.CaptureTarget.temp}
           flashMode={Camera.constants.FlashMode.off}
         />
         {
-          !this.state.preview ? (
+          this.state.isPreviewing ? (
+            <View style={styles.previewPos} >
+              <Image
+                style={[styles.previewContent, { width, height: width * outputImageAspectRatio }]}
+                source={{ uri: this.state.previewURI }}
+              />
+            </View>
+          ) : null
+        }
+        {
+          !this.state.isPreviewing ? (
             <TouchableOpacity
               activeOpacity={0.9}
               style={styles.capture}
@@ -56,13 +90,13 @@ export class CameraView extends Component {
               <CameraIcon />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={styles.touchableRight} activeOpacity={0.7} onPress={this.props.onFinish} >
+            <TouchableOpacity style={styles.touchableRight} activeOpacity={0.7} onPress={this._onChoose} >
               <Text style={[styles.touchableText]} >Choose</Text>
             </TouchableOpacity>
           )
         }
-        <TouchableOpacity style={styles.touchableLeft} activeOpacity={0.7} onPress={this.props.onClose} >
-          <Text style={[styles.touchableText]} >Close</Text>
+        <TouchableOpacity style={styles.touchableLeft} activeOpacity={0.7} onPress={this._onCancel} >
+          <Text style={[styles.touchableText]} >Cancel</Text>
         </TouchableOpacity>
       </View>
     )
@@ -76,7 +110,7 @@ CameraView.propTypes = {
 CameraView.defaultProps = {
   outputImageAspectRatio: 1,
   onClose: () => {},
-  onFinish: () => {},
+  onFinish: (uri) => {},
 }
 
 const styles = StyleSheet.create({
@@ -106,5 +140,18 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     padding: 8,
+  },
+  previewPos: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    backgroundColor: 'black',
+  },
+  previewContent: {
+    alignSelf: 'stretch',
   },
 });

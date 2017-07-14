@@ -3,8 +3,6 @@ PODS:
     - React/Core (= 0.45.1)
   - react-native-camera (0.9.4):
     - React
-  - react-native-fetch-blob (0.10.3-beta.1):
-    - React/Core
   - react-native-image-resizer (0.1.1):
     - React
   - React/BatchedBridge (0.45.1):
@@ -41,13 +39,15 @@ PODS:
     - React/Core
   - ReactNativePermissions (0.2.7):
     - React
+  - RNFS (2.3.3):
+    - React/Core
+  - RNGL (2.42.1)
   - RNVectorIcons (4.2.0):
     - React
   - Yoga (0.45.1.React)
 
 DEPENDENCIES:
   - react-native-camera (from `../node_modules/react-native-camera`)
-  - react-native-fetch-blob (from `../node_modules/react-native-fetch-blob`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - React/BatchedBridge (from `../node_modules/react-native`)
   - React/Core (from `../node_modules/react-native`)
@@ -63,6 +63,8 @@ DEPENDENCIES:
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
   - ReactNativePermissions (from `../node_modules/react-native-permissions`)
+  - RNFS (from `../node_modules/react-native-fs`)
+  - RNGL (from `../node_modules/gl-react-native`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga/Yoga.podspec`)
 
@@ -71,12 +73,14 @@ EXTERNAL SOURCES:
     :path: ../node_modules/react-native
   react-native-camera:
     :path: ../node_modules/react-native-camera
-  react-native-fetch-blob:
-    :path: ../node_modules/react-native-fetch-blob
   react-native-image-resizer:
     :path: ../node_modules/react-native-image-resizer
   ReactNativePermissions:
     :path: ../node_modules/react-native-permissions
+  RNFS:
+    :path: ../node_modules/react-native-fs
+  RNGL:
+    :path: ../node_modules/gl-react-native
   RNVectorIcons:
     :path: ../node_modules/react-native-vector-icons
   Yoga:
@@ -85,12 +89,13 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   React: 0c9191a8b0c843d7004f950ac6b5f6cba9d125c7
   react-native-camera: 267127fbb4a2960d3f97b5ca8a33339620e3f6b3
-  react-native-fetch-blob: cf03e85ac13174bd415f61193911567472f86d69
   react-native-image-resizer: cc3279e34f0aa32cad83921fe70f5de5ac270522
   ReactNativePermissions: 9685eca85c12e071edd33aeef398252f5bbc4431
+  RNFS: f9f595c3ef0f7ee6d476298b099a64faa69f5c72
+  RNGL: dcf1a4216b37bd2274d9866f5204cea564765117
   RNVectorIcons: 6d98d83e944d15014d8071dd9819beb094c61133
   Yoga: 89c8738d42a0b46a113acb4e574336d61cba2985
 
-PODFILE CHECKSUM: c326b95145043f4751e560297b0eb2d835635d4e
+PODFILE CHECKSUM: f02200f5112d5afd2589b35ffe685659f7cf7f77
 
 COCOAPODS: 1.2.1

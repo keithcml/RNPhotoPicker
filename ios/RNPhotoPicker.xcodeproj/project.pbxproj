@@ -13,6 +13,8 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		23ACDC91EE0AFD86AFDFA81B /* libPods-RNPhotoPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03EC38F79079A0B3670A1334 /* libPods-RNPhotoPicker.a */; };
+		2E9C9EAA9ACC41D180535B7A /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14C3B9E1F208442391994088 /* libRNFS.a */; };
+		5179CD153234405EBF4C1D76 /* libRNGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F34048B9CDCA4797A172CAE5 /* libRNGL.a */; };
 		E21B2C00D95EC19718B85322 /* libPods-RNPhotoPickerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EABA8CCCC5034C926076BB38 /* libPods-RNPhotoPickerTests.a */; };
 /* End PBXBuildFile section */
 
@@ -39,11 +41,13 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = RNPhotoPicker/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RNPhotoPicker/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RNPhotoPicker/main.m; sourceTree = "<group>"; };
+		14C3B9E1F208442391994088 /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 		52219295BC12CAEEDDFF1520 /* Pods-RNPhotoPickerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNPhotoPickerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-RNPhotoPickerTests/Pods-RNPhotoPickerTests.release.xcconfig"; sourceTree = "<group>"; };
 		7A1F9CBA0C1059F32411E310 /* Pods-RNPhotoPicker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNPhotoPicker.release.xcconfig"; path = "Pods/Target Support Files/Pods-RNPhotoPicker/Pods-RNPhotoPicker.release.xcconfig"; sourceTree = "<group>"; };
 		82296936B601868A1ED5BC2D /* Pods-RNPhotoPickerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNPhotoPickerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RNPhotoPickerTests/Pods-RNPhotoPickerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AFA79D74E32E62604BD61129 /* Pods-RNPhotoPicker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNPhotoPicker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RNPhotoPicker/Pods-RNPhotoPicker.debug.xcconfig"; sourceTree = "<group>"; };
 		EABA8CCCC5034C926076BB38 /* libPods-RNPhotoPickerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNPhotoPickerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F34048B9CDCA4797A172CAE5 /* libRNGL.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGL.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +64,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				23ACDC91EE0AFD86AFDFA81B /* libPods-RNPhotoPicker.a in Frameworks */,
+				2E9C9EAA9ACC41D180535B7A /* libRNFS.a in Frameworks */,
+				5179CD153234405EBF4C1D76 /* libRNGL.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,7 +204,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 830;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -407,9 +413,19 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/gl-react-native/ios",
+				);
 				INFOPLIST_FILE = RNPhotoPickerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -427,9 +443,19 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = SHCCY36E8X;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/gl-react-native/ios",
+				);
 				INFOPLIST_FILE = RNPhotoPickerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -448,6 +474,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = SHCCY36E8X;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/gl-react-native/ios",
+				);
 				INFOPLIST_FILE = RNPhotoPicker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -468,6 +499,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SHCCY36E8X;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
+					"$(SRCROOT)/../node_modules/gl-react-native/ios",
+				);
 				INFOPLIST_FILE = RNPhotoPicker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (

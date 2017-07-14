@@ -896,7 +896,7 @@ balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
 
-base-64@0.1.0:
+base-64@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
 
@@ -2015,13 +2015,13 @@ gl-react-image@0.0.2:
     rect-clamp "0.0.0"
     rect-crop "0.0.0"
 
-gl-react-native@^2.38.0:
+gl-react-native@^2.38.0, gl-react-native@^2.42.3:
   version "2.42.3"
   resolved "https://registry.yarnpkg.com/gl-react-native/-/gl-react-native-2.42.3.tgz#b3304b8e47bd565d2e61b1184070ed5ba6e2390d"
   dependencies:
     invariant "2.2.0"
 
-gl-react@^2.2.8:
+gl-react@^2.2.10, gl-react@^2.2.8:
   version "2.2.10"
   resolved "https://registry.yarnpkg.com/gl-react/-/gl-react-2.2.10.tgz#205197af3638275380621e4cbe8e55df5d4e071b"
   dependencies:
@@ -2040,7 +2040,7 @@ glob-parent@^2.0.0:
   dependencies:
     is-glob "^2.0.0"
 
-glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.0.6, glob@^7.1.1, glob@^7.1.2:
+glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.1, glob@^7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.2.tgz#c19c9df9a028702d678612384a6552404c636d15"
   dependencies:
@@ -2312,15 +2312,9 @@ invariant@2.2.0:
   dependencies:
     loose-envify "^1.0.0"
 
-invariant@2.2.1:
+invariant@2.2.1, invariant@^2.2.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.1.tgz#b097010547668c7e337028ebe816ebe36c8a8d54"
-  dependencies:
-    loose-envify "^1.0.0"
-
-invariant@^2.2.0:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.2.tgz#9e1f56ac0acdb6bf303306f338be3b204ae60360"
   dependencies:
     loose-envify "^1.0.0"
 
@@ -3723,12 +3717,12 @@ react-native-camera@0.9.4:
   dependencies:
     opencollective "^1.0.3"
 
-react-native-fetch-blob@^0.10.5:
-  version "0.10.5"
-  resolved "https://registry.yarnpkg.com/react-native-fetch-blob/-/react-native-fetch-blob-0.10.5.tgz#498e5437ad604db126b46e4a06cd9cbf33d1ea42"
+react-native-fs@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.3.3.tgz#94c0d9699ec20405f30b79a69b6d8b96d2a4851b"
   dependencies:
-    base-64 "0.1.0"
-    glob "^7.0.6"
+    base-64 "^0.1.0"
+    utf8 "^2.1.1"
 
 react-native-image-cropper@^0.3.0:
   version "0.3.0"
@@ -4633,6 +4627,10 @@ unpipe@1.0.0, unpipe@~1.0.0:
 user-home@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/user-home/-/user-home-1.1.1.tgz#2b5be23a32b63a7c9deb8d0f28d485724a3df190"
+
+utf8@^2.1.1:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/utf8/-/utf8-2.1.2.tgz#1fa0d9270e9be850d9b05027f63519bf46457d96"
 
 util-deprecate@1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"

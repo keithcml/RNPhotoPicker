@@ -20,17 +20,20 @@ class CropView extends Component {
 
   crop = () => {
     this.refs.cropper.crop()
-    .then(base64 => console.log(base64))
+    .then(base64 => {
+      console.log(base64)
+      this.props.onFinishCropping(base64)
+    })
   }
 
   render() {
-    const { cropRatio } = this.props
+    const { cropRatio, imagePath } = this.props
     const cropHeight = width * cropRatio
     return(
       <View style={{ flex: 1 }} >
         <ImageCrop
           ref={'cropper'}
-          image={this.state.image}
+          image={imagePath}
           cropHeight={cropHeight}
           cropWidth={width}
           maxZoom={80}
@@ -50,6 +53,8 @@ class CropView extends Component {
 }
 CropView.propTypes = {
   cropRatio: PropTypes.number,
+  imagePath: PropTypes.string.isRequired,
+  onFinishCropping: PropTypes.func.isRequired,
 }
 CropView.defaultProps = {
   cropRatio: 1,

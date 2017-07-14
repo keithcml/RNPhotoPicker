@@ -218,7 +218,6 @@ class CameraRollList extends Component {
             )
             return
           }
-          console.log('open');
           this.setState({
             isTakingPhoto: true,
           })
@@ -252,6 +251,19 @@ class CameraRollList extends Component {
           this.state.selected[item.node.image.uri] // renderItem depends on state
         }
         onPress={ (uri, isSelected) => {
+
+          if (this.props.maxSelection === 1) {
+
+            if (this.props.outputImageAspectRatio === null) {
+              // return the image immediately
+              console.log('return image to caller')
+
+              return
+            }
+            this.props.onCrop(uri)
+            return
+          }
+
           if (!isSelected) {
             this.setState((oldState) => {
               let selected = oldState.selected
@@ -314,7 +326,7 @@ class CameraRollList extends Component {
                 isTakingPhoto: false,
               })
             }}
-            onFinish={() => {
+            onFinish={(uri) => {
 
             }}
           />
@@ -364,10 +376,12 @@ class CameraRollList extends Component {
 
 CameraRollList.propTypes = {
   maxSelection: PropTypes.number,
+  onCrop: PropTypes.func,
   onFinishCapture: PropTypes.func,
 }
 CameraRollList.defaultProps = {
   maxSelection: 1,
+  onCrop: (uri) => {},
   onFinishCapture: () => {},
 }
 export default CameraRollList
