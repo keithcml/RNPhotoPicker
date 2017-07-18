@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import PhotoPicker from './src/index'
+import { PhotoPickerContainer } from './src/index'
 
 export default class RNPhotoPickerExample extends Component {
   constructor(props) {
@@ -25,7 +26,11 @@ export default class RNPhotoPickerExample extends Component {
         <PhotoPicker
           containerStyle={{ flex: 2, backgroundColor: 'white', alignSelf: 'stretch' }}
           tintColor='red'
-          mode='child'
+          maxSelection={3}
+          outputImageAspectRatio={null}
+          onResultCallback={(photos)=>{
+            console.log(photos);
+          }}
         />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} >
           <TouchableOpacity
@@ -39,16 +44,17 @@ export default class RNPhotoPickerExample extends Component {
           </TouchableOpacity>
         </View>
 
-        <PhotoPicker
+        <PhotoPickerContainer
           ref={(picker => { this._picker = picker })}
           tintColor='red'
-          mode='modal'
           maxSelection={1}
           outputImageAspectRatio={1.5}
+          onResultCallback={(photos)=>{
+            console.log(photos);
+          }}
           onShowed={() => {}}
           onDismissed={() => {}}
         />
-
       </View>
     );
   }

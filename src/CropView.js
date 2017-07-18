@@ -16,7 +16,7 @@ import { ImageCrop } from 'react-native-image-cropper'
 
 const { width, height } = Dimensions.get('window')
 
-class CropView extends Component {
+export class CropView extends Component {
 
   crop = () => {
     this.refs.cropper.crop()
@@ -27,13 +27,13 @@ class CropView extends Component {
   }
 
   render() {
-    const { cropRatio, imagePath } = this.props
+    const { cropRatio, imageUri } = this.props
     const cropHeight = width * cropRatio
     return(
       <View style={{ flex: 1 }} >
         <ImageCrop
           ref={'cropper'}
-          image={imagePath}
+          image={imageUri}
           cropHeight={cropHeight}
           cropWidth={width}
           maxZoom={80}
@@ -42,10 +42,10 @@ class CropView extends Component {
           pinchToZoom={true}
         />
         <TouchableOpacity
-          style={{ padding: 1, alignSelf: 'stretch', height: GRID_SIZE }}
+          style={{ padding: 1, alignSelf: 'stretch', height: cropHeight }}
           onPress={this.crop}
         >
-          <Text>OK</Text>
+          <Text>Crop</Text>
         </TouchableOpacity>
       </View>
     )
@@ -53,7 +53,8 @@ class CropView extends Component {
 }
 CropView.propTypes = {
   cropRatio: PropTypes.number,
-  imagePath: PropTypes.string.isRequired,
+  imageUri: PropTypes.object.isRequired,
+  onCloseCropping: PropTypes.func.isRequired,
   onFinishCropping: PropTypes.func.isRequired,
 }
 CropView.defaultProps = {

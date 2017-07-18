@@ -17,7 +17,6 @@ import {
 } from 'react-native'
 import { Photo } from './Photo'
 import { CameraIcon } from './CameraIcon'
-import { CameraView } from './CameraView'
 import ImageResizer from 'react-native-image-resizer'
 import * as Permissions from './Permissions'
 
@@ -34,7 +33,6 @@ class CameraRollList extends Component {
     photos: Array<string>,
     selected: {| [string]: boolean |},
     noPhotoPermission: boolean,
-    isTakingPhoto: boolean,
   }
 
   constructor(props) {
@@ -47,7 +45,6 @@ class CameraRollList extends Component {
       photos: [],
       selected: {},
       noPhotoPermission: false,
-      isTakingPhoto: false,
     }
     this._getPhotos()
   }
@@ -69,12 +66,12 @@ class CameraRollList extends Component {
         ImageResizer.createResizedImage(imageUri, 800, 800, 'JPEG', 90, 0, null)
         .then((resizedImageUri) => {
           // resizeImageUri is the URI of the new image that can now be displayed, uploaded...
-          console.log(resizedImageUri);
-          return resizedImageUri;
+          console.log(resizedImageUri)
+          return resizedImageUri
         }).catch((err) => {
-          throw(err);
+          throw(err)
         })
-      );
+      )
     }
     async function loop(originalURIs) {
       let uris = [];
@@ -84,16 +81,16 @@ class CameraRollList extends Component {
           uris = uris.concat(resizedImageUri);
         }
         catch (err) {
-          throw(err);
+          throw(err)
         }
       }
-      return uris;
+      return uris
     }
     return(
       loop(Object.keys(this.state.selected))
       .then( res => res )
       .catch( err => { throw(err) })
-    );
+    )
   }
 
   _getPhotos = () => {
@@ -185,15 +182,9 @@ class CameraRollList extends Component {
         </View>
       );
     }
-    return <View style={{ height: 40 }} />;
+    return <View style={{ height: 40 }} />
   }
   _renderCameraButton = () => {
-    // const pickerOptions = {
-    //   maxWidth: 800,
-    //   maxHeight: 800,
-    //   mediaType: 'photo',
-    //   noData: true,
-    // };
     return(
       <TouchableOpacity
         activeOpacity={0.9}
@@ -218,16 +209,7 @@ class CameraRollList extends Component {
             )
             return
           }
-          this.setState({
-            isTakingPhoto: true,
-          })
-          //this._cameraView.show()
-          // openCamera(pickerOptions, (response) => {
-          //   if (response.hasOwnProperty('didCancel') && response.didCancel) {
-          //     return;
-          //   }
-          //   this.props.onFinishCapture(response.uri)
-          // });
+          this.props.onCapture()
         }}
       >
         <CameraIcon />
@@ -235,7 +217,7 @@ class CameraRollList extends Component {
     );
   }
   _renderItem = ({ item, index }) => {
-    if (index === 0 && this.props.hasCamera) {
+    if (index === 0 && this.props.allowCameraCapture) {
       return <View>{this._renderCameraButton()}</View>
     }
     return(
@@ -253,11 +235,9 @@ class CameraRollList extends Component {
         onPress={ (uri, isSelected) => {
 
           if (this.props.maxSelection === 1) {
-
             if (this.props.outputImageAspectRatio === null) {
               // return the image immediately
-              console.log('return image to caller')
-
+              this.props.onSingleSelection(uri)
               return
             }
             this.props.onCrop(uri)
@@ -270,7 +250,7 @@ class CameraRollList extends Component {
               delete selected[uri]
               return { selected }
             })
-            return true
+            return
           }
           let count = 0
           for (let key of Object.keys(this.state.selected)) {
@@ -291,7 +271,7 @@ class CameraRollList extends Component {
                 }
               ]
             )
-            return false
+            return
           }
           this.setState((oldState) => {
             return {
@@ -301,7 +281,7 @@ class CameraRollList extends Component {
               }
             }
           })
-          return true
+          return
         }}
       />
     )
@@ -309,33 +289,10 @@ class CameraRollList extends Component {
   render() {
     return(
       <View style={{ flex: 1 }} >
-        <Modal
-          animationType={"slide"}
-          transparent={false}
-          visible={this.state.isTakingPhoto}
-          onRequestClose={() => {
-            alert("Modal has been closed.")
-          }}
-        >
-          <CameraView
-            width={width}
-            {...this.props}
-            onClose={() => {
-              console.log('close')
-              this.setState({
-                isTakingPhoto: false,
-              })
-            }}
-            onFinish={(uri) => {
-
-            }}
-          />
-        </Modal>
         <FlatList
           numColumns={4}
           columnWrapperStyle={{
             flexDirection: 'row',
-            //justifyContent: 'space-between',
             marginBottom: 1,
           }}
           ListHeaderComponent={this._renderHeader}
@@ -357,31 +314,21 @@ class CameraRollList extends Component {
             }
           }}
         />
-
       </View>
     );
   }
 }
 
-// <Modal
-//   ref={ (camera) => {this._cameraView = camera} }
-//   dismissOnHardwareBackPress
-//   contextOpacity={0.5}
-//   contextColor='#000'
-//   dismissOnTouchOutside
-//   contextOnPress={() => {}}
-//   animationDuration={300}
-//   {...this.props}
-// >
-
 CameraRollList.propTypes = {
   maxSelection: PropTypes.number,
+  onSingleSelection: PropTypes.func,
   onCrop: PropTypes.func,
-  onFinishCapture: PropTypes.func,
+  onCapture: PropTypes.func,
 }
 CameraRollList.defaultProps = {
   maxSelection: 1,
+  onSingleSelection: (singlePhoto: string) => {},
   onCrop: (uri) => {},
-  onFinishCapture: () => {},
+  onCapture: () => {},
 }
 export default CameraRollList
