@@ -79,7 +79,17 @@ class PhotoPickerContainer extends Component {
       <TopBar
         {...this.props}
         onClose={() => {this.dismiss()}}
-        onDone={() => {this.dismiss()}}
+        onDone={() => {
+          return(
+            this._picker.multipleSelectionFinish()
+            .then( (uris) => {
+              this.props.onFinish(uris)
+            })
+            .catch( err => {
+              console.log(err)
+            })
+          )
+        }}
       />
     )
   }
@@ -127,13 +137,13 @@ class PhotoPickerContainer extends Component {
           <View style={{ width, height }} >
             {this._renderPickerTopBar()}
             <PhotoPicker
+              ref={(picker => { this._picker = picker })}
               tintColor='blue'
               outputImageAspectRatio={null}
               allowCameraCapture={true}
               maxSelection={1}
               {...this.props}
               onResultCallback={(photos: Array<string>) => {
-                //console.log('you need to pass in result callback')
                 onFinish(photos)
                 this._dimissMyself()
               }}

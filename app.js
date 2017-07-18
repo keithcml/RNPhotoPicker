@@ -17,7 +17,6 @@ import { PhotoPickerContainer } from './src/index'
 export default class RNPhotoPickerExample extends Component {
   constructor(props) {
     super(props)
-
   }
   render() {
     return (
@@ -29,6 +28,10 @@ export default class RNPhotoPickerExample extends Component {
           maxSelection={2}
           allowCameraCapture={true}
           outputImageAspectRatio={null}
+          outputSettings={{
+            noCompression: false,
+            JPEGCompressionQuality: 90,
+          }}
           onResultCallback={(photos)=>{
             console.log(photos);
           }}
@@ -37,7 +40,7 @@ export default class RNPhotoPickerExample extends Component {
           <TouchableOpacity
             style={{ justifyContent: 'center', alignItems: 'center' }}
             onPress={ () => {
-              this._picker.show()
+              this._pickerContainer.show()
             }}
             activeOpacity={0.7}
           >
@@ -46,11 +49,15 @@ export default class RNPhotoPickerExample extends Component {
         </View>
 
         <PhotoPickerContainer
-          ref={(picker => { this._picker = picker })}
+          ref={(pickerContainer => { this._pickerContainer = pickerContainer })}
           tintColor='red'
           maxSelection={1}
-          //outputImageAspectRatio={1.5}
-          onResultCallback={(photos)=>{
+          outputImageAspectRatio={1}
+          outputSettings={{
+            noCompression: false,
+            JPEGCompressionQuality: 90,
+          }}
+          onFinish={(photos)=>{
             console.log(photos)
           }}
         />

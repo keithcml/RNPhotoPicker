@@ -22,7 +22,10 @@ export class CropView extends Component {
   crop = () => {
     this.refs.cropper.crop()
     .then(base64 => {
-      console.log(base64)
+
+      //let uri = 'data:image/jpeg;base64,' + base64
+      //this.props.onFinishCropping(uri)
+
       let path = RNFS.DocumentDirectoryPath + '/crop.jpg'
 
       RNFS.writeFile(
@@ -30,15 +33,20 @@ export class CropView extends Component {
         base64,
         'base64')
       .then((success) => {
-        console.log('FILE WRITTEN!');
-        this.props.onFinishCropping(path)
+        if (success) {
+          this.props.onFinishCropping(path)
+        }
+        else {
+          console.log('cannot crop');
+        }
       })
       .catch((err) => {
         throw(err)
       })
     })
     .catch((err) => {
-      console.log(err.message);
+      console.log('crop error');
+      console.log(err.message)
     })
   }
 
@@ -50,7 +58,7 @@ export class CropView extends Component {
       cropHeight = height * 0.75
       cropWidth = cropHeight/cropRatio
     }
-    console.log('cropping ' + cropImageUri);
+
     return(
       <View style={{ flex: 1, backgroundColor: 'black', alignItems: 'center' }} >
 

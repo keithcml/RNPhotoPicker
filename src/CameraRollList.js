@@ -17,7 +17,6 @@ import {
 } from 'react-native'
 import { Photo } from './Photo'
 import { CameraIcon } from './CameraIcon'
-import ImageResizer from 'react-native-image-resizer'
 import * as Permissions from './Permissions'
 
 const { width } = Dimensions.get('window')
@@ -57,37 +56,8 @@ class CameraRollList extends Component {
     return true
   }
 
-  getSelectedPhotoURI = (clearSelection) => {
-    const compressImage = (imageUri) => {
-      return(
-        ImageResizer.createResizedImage(imageUri, 800, 800, 'JPEG', 90, 0, null)
-        .then((resizedImageUri) => {
-          // resizeImageUri is the URI of the new image that can now be displayed, uploaded...
-          console.log(resizedImageUri)
-          return resizedImageUri
-        }).catch((err) => {
-          throw(err)
-        })
-      )
-    }
-    async function loop(originalURIs) {
-      let uris = [];
-      for (let key of originalURIs) {
-        try {
-          const resizedImageUri = await compressImage(key);
-          uris = uris.concat(resizedImageUri);
-        }
-        catch (err) {
-          throw(err)
-        }
-      }
-      return uris
-    }
-    return(
-      loop(Object.keys(this.state.selected))
-      .then( res => res )
-      .catch( err => { throw(err) })
-    )
+  getSelectedPhotoURI(): Array<string> {
+    return Object.keys(this.state.selected)
   }
 
   _getPhotos = () => {

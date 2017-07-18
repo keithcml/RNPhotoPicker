@@ -27,9 +27,7 @@ class PhotoPicker extends Component {
     isTakingPhoto: boolean,
     cropImageUri: string,
     results: Array<string>,
-    selectedPhotos: {| [string]: boolean |},
-    capturedPhoto: string,
-    croppedPhoto: string,
+    //selectedPhotos: {| [string]: boolean |},
   }
 
   constructor(props) {
@@ -39,16 +37,28 @@ class PhotoPicker extends Component {
       isTakingPhoto: false,
       cropImageUri: '',
       results: [],
-      selectedPhotos: {},
-      capturedPhoto: '',
-      croppedPhoto: '',
+      //selectedPhotos: {},
     }
+  }
+
+  // call outside this class to collect selected multiple photos, return image uri
+  multipleSelectionFinish(): Promise {
+    return(
+      this._processBeforeFinishing(this._cameraRollList.getSelectedPhotoURI())
+      .then( (processedURIs) => {
+        this.props.onResultCallback(processedURIs)
+      })
+      .catch( err => {
+        console.log('multipleSelectionFinish error');
+        console.log(err)
+      })
+    )
   }
 
   _processBeforeFinishing = (photoURIs) => {
     const compressOptions = { ...defaultOutputSettings, ...this.props.outputSettings }
     if (compressOptions.noCompression) {
-      return
+      return photoURIs
     }
     const compressImage = (imageUri) => {
       return(
@@ -61,11 +71,10 @@ class PhotoPicker extends Component {
           0,
           null)
         .then((resizedImageUri) => {
-          // resizeImageUri is the URI of the new image that can now be displayed, uploaded...
-          console.log(resizedImageUri)
           return resizedImageUri
         })
         .catch((err) => {
+          console.log('ImageResizer error');
           throw(err)
         })
       )
@@ -84,7 +93,7 @@ class PhotoPicker extends Component {
       return uris
     }
     return(
-      loop(Object.keys(this.state.selected))
+      loop(photoURIs)
       .then( res => res )
       .catch( err => { throw(err) })
     )
@@ -95,12 +104,13 @@ class PhotoPicker extends Component {
     return(
       <View style={[styles.originalPickerContainer, pickerContainer]} >
         <CameraRollList
+          ref={ (cameraRollList) => { this._cameraRollList = cameraRollList } }
           { ...this.props }
           onSingleSelection={ (singlePhoto: string) => {
             return(
               this._processBeforeFinishing([singlePhoto])
               .then( (processedURIs) => {
-                this.props.onResultCallback([processedURIs])
+                this.props.onResultCallback(processedURIs)
               })
               .catch( err => {
                 console.log(err)
@@ -143,7 +153,7 @@ class PhotoPicker extends Component {
                 isCroppingPhoto: false,
                 cropImageUri: '',
               })
-
+              //console.log('onFinishCropping: ' + uri)
               return(
                 this._processBeforeFinishing([uri])
                 .then( (processedURIs) => {
