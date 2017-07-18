@@ -3,7 +3,7 @@
 'use-strict'
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
-import { StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
 
 class PresentationContext extends Component {
   state: {
@@ -19,39 +19,63 @@ class PresentationContext extends Component {
 
   componentWillReceiveProps(nextProps: OverlayType) {
     if (this.props.showContext !== nextProps.showContext) {
-      const toValue = nextProps.showContext ? nextProps.opacity : 0;
+      const toValue = nextProps.showContext ? nextProps.presentationContextStyle.contextOpacity : 0;
       Animated.timing(this.state.opacityAnimated, {
         toValue,
-        duration: this.props.animationDuration,
+        duration: this.props.animation.duration,
       }).start();
     }
   }
 
+  _onPressContext = () => {
+    console.log('_onPressContext')
+    if (this.props.action.dismissOnTouchContext) {
+      this.props.onDismissByTouchingContext()
+    }
+  }
+
   render() {
-    const { onPress, backgroundColor } = this.props
+    const { presentationContextStyle, animation, action } = this.props
     const { opacityAnimated } = this.state
     return (
       <Animated.View
-        style={[styles.overlay, { backgroundColor, opacity: opacityAnimated }]}
+        style={[
+          styles.overlay,
+          {
+            backgroundColor: presentationContextStyle.contextColor,
+            opacity: opacityAnimated,
+            width: presentationContextStyle.contextWidth,
+            height: presentationContextStyle.contextHeight,
+          }
+        ]}
       >
-        <TouchableOpacity onPress={onPress} style={[styles.overlay]} activeOpacity={1} />
+        <TouchableOpacity onPress={this._onPressContext} style={[styles.overlay]} activeOpacity={1} />
       </Animated.View>
-    );
+    )
   }
 }
 PresentationContext.propTypes = {
-  backgroundColor: PropTypes.string,
-  opacity: PropTypes.number,
-  animationDuration: PropTypes.number,
+  presentationContextStyle: PropTypes.object,
+  animation: PropTypes.object,
+  action: PropTypes.object,
   showContext: PropTypes.bool,
-  onPress: PropTypes.func,
+  onDismissByTouchingContext: PropTypes.func.isRequired,
 }
 PresentationContext.defaultProps = {
-  backgroundColor: '#000',
-  opacity: 0.5,
-  animationDuration: 0.5,
+  presentationContextStyle: {
+    contextOpacity: 0.5,
+    contextColor: '#000',
+    contextWidth: Dimensions.get('window').width,
+    contextHeight: Dimensions.get('window').height,
+  },
+  animation: {
+    duration: 300,
+  },
+  action: {
+    dismissOnTouchContext: false,
+    contextOnPress: () => {},
+  },
   showContext: false,
-  onPress: () => {},
 }
 export default PresentationContext
 

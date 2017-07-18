@@ -26,7 +26,8 @@ export default class RNPhotoPickerExample extends Component {
         <PhotoPicker
           containerStyle={{ flex: 2, backgroundColor: 'white', alignSelf: 'stretch' }}
           tintColor='red'
-          maxSelection={3}
+          maxSelection={2}
+          allowCameraCapture={true}
           outputImageAspectRatio={null}
           onResultCallback={(photos)=>{
             console.log(photos);
@@ -50,10 +51,8 @@ export default class RNPhotoPickerExample extends Component {
           maxSelection={1}
           outputImageAspectRatio={1.5}
           onResultCallback={(photos)=>{
-            console.log(photos);
+            console.log(photos)
           }}
-          onShowed={() => {}}
-          onDismissed={() => {}}
         />
       </View>
     );

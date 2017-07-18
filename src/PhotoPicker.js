@@ -17,6 +17,8 @@ import { CameraView } from './CameraView'
 import { CropView } from './CropView'
 import CameraRollList from './CameraRollList'
 
+const { width } = Dimensions.get('window')
+
 class PhotoPicker extends Component {
   state: {
     isCroppingPhoto: boolean,
@@ -44,7 +46,7 @@ class PhotoPicker extends Component {
   render() {
     const { pickerContainer } = this.props
     return(
-      <View style={[originalPickerContainer, pickerContainer]} >
+      <View style={[styles.originalPickerContainer, pickerContainer]} >
         <CameraRollList
           { ...this.props }
           onSingleSelection={ (singlePhoto: string) => {

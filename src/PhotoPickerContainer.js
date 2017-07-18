@@ -59,7 +59,7 @@ class PhotoPickerContainer extends Component {
         this.state.translationAnimated,
         {
           toValue,
-          duration: this.props.animationDuration,
+          duration: this.props.animation.duration,
         }).start((completion: { finished: boolean }) => {
           if (!completion.finished) {
             const rollBack = flag === 0 ? 1 : 0
@@ -85,40 +85,45 @@ class PhotoPickerContainer extends Component {
   }
 
   show() {
-    const { onShowed } = this.props
-    this._togglePicker(1, onShowed)
+    const { willShowCallback } = this.props
+    this._togglePicker(1, willShowCallback)
   }
 
   dismiss() {
-    const { onDismissed } = this.props
-    this._togglePicker(0, onDismissed)
+    const { willDismissCallback } = this.props
+    this._togglePicker(0, willDismissCallback)
+  }
+
+  _dimissMyself = () => {
+    const { willDismissCallback } = this.props
+    this._togglePicker(0, willDismissCallback)
   }
 
   render() {
-    const { tintColor, width, height, animationDuration, contextColor, contextOpacity, show, contextOnPress } = this.props
+    const { tintColor, presentationContextStyle, contentContainerStyle, animation, action, onFinish } = this.props
+    const { contextColor, contextOpacity, contextWidth, contextHeight } = presentationContextStyle
+    const { width, height } = contentContainerStyle.size
+    const { duration } = animation
+    const { contextOnPress } = action
     const { translationAnimated, pickerState } = this.state
     const screenHeight: number = Dimensions.get('window').height
     const hidden = pickerState === 'closed' ? styles.hidden : null
+
+    const topMargin = contextHeight - height
     const yPosition = translationAnimated.interpolate({
         inputRange: [0, 1],
-        outputRange: [screenHeight, 0],
+        outputRange: [screenHeight, topMargin],
         extrapolate: 'clamp'
     })
     return(
-      <View style={[styles.container, containerStyle, hidden]}>
+      <View style={[styles.container, hidden]}>
         <PresentationContext
-          backgroundColor={contextColor}
-          opacity={contextOpacity}
-          animationDuration={animationDuration}
+          { ...this.props }
+          presentationContextStyle={{ ...defaultPresentationContextStyle, ...presentationContextStyle }}
           showContext={pickerState === 'opened'}
-          onPress={contextOnPress}
+          onDismissByTouchingContext={this._dimissMyself}
         />
-        <Animated.View
-          style={[
-            styles.modalContainer,
-            { transform: [{ translateY: yPosition }] }
-          ]}
-        >
+        <Animated.View style={{ transform: [{ translateY: yPosition }] }} >
           <View style={{ width, height }} >
             {this._renderPickerTopBar()}
             <PhotoPicker
@@ -126,10 +131,11 @@ class PhotoPickerContainer extends Component {
               outputImageAspectRatio={null}
               allowCameraCapture={true}
               maxSelection={1}
-              onResultCallback={(photos: Array<string>) => {
-                console.log('you need to pass in result callback')
-              }}
               {...this.props}
+              onResultCallback={(photos: Array<string>) => {
+                //console.log('you need to pass in result callback')
+                onFinish(photos)
+              }}
             />
           </View>
         </Animated.View>
@@ -137,59 +143,63 @@ class PhotoPickerContainer extends Component {
     )
   }
 }
-PhotoPicker.propTypes = {
-  // global props
+PhotoPickerContainer.propTypes = {
   tintColor: PropTypes.string,
-  containerStyle: PropTypes.object,
-  // modal mode props
-  // presentation context
-  contextOpacity: PropTypes.number,
-  contextColor: PropTypes.string,
-  dismissOnTouchOutside: PropTypes.bool,
-  contextOnPress: PropTypes.func,
-  animationDuration: PropTypes.number,
-  width: PropTypes.number,
-  height: PropTypes.number,
-  dismissOnHardwareBackPress: PropTypes.bool,
-  onShowed: PropTypes.func,
-  onDismissed: PropTypes.func,
-  show: PropTypes.bool,
+  presentationContextStyle: PropTypes.object,
+  contentContainerStyle: PropTypes.object,
+  animation: PropTypes.object,
+  action: PropTypes.object,
+  onFinish: PropTypes.func,
 }
-PhotoPicker.defaultProps = {
-  // global props
+PhotoPickerContainer.defaultProps = {
   tintColor: 'white',
-  containerStyle: {},
-  // modal mode props
-  contextOpacity: 0.5,
-  contextColor: '#000',
-  dismissOnTouchOutside: true,
-  contextOnPress: () => {},
-  animationDuration: 300,
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height,
-  dismissOnHardwareBackPress: true,
-  onShowed: () => {},
-  onDismissed: () => {},
-  show: false,
+  presentationContextStyle: {
+    contextOpacity: 0.5,
+    contextColor: '#000',
+    contextWidth: Dimensions.get('window').width,
+    contextHeight: Dimensions.get('window').height,
+  },
+  contentContainerStyle: {
+    size: {
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height,
+    }
+  },
+  animation: {
+    duration: 300,
+    willShowCallback: () => {},
+    willDismissCallback: () => {},
+  },
+  action: {
+    dismissOnTouchContext: true,
+    contextOnPress: () => {},
+    dismissOnHardwareBackPress: true,
+  },
+  onFinish: (photos) => {},
 }
 export default PhotoPickerContainer
 
+const defaultPresentationContextStyle = {
+  contextOpacity: 0.5,
+  contextColor: '#000',
+  contextWidth: Dimensions.get('window').width,
+  contextHeight: Dimensions.get('window').height,
+}
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     position: 'absolute',
     top: 0,
     left: 0,
+    right: 0,
+    bottom: 0,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
   hidden: {
     top: -10000,
     left: 0,
     height: 0,
     width: 0,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'white',
   },
 });

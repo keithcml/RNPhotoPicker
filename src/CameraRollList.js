@@ -50,9 +50,6 @@ class CameraRollList extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.isTakingPhoto !== this.state.isTakingPhoto) {
-      return true
-    }
     if (nextState.photos === this.state.photos &&
         nextState.noPhotoPermission === this.state.noPhotoPermission) {
           return false
@@ -217,12 +214,12 @@ class CameraRollList extends Component {
     );
   }
   _renderItem = ({ item, index }) => {
-    if (index === 0 && this.props.allowCameraCapture) {
+    if (index === 0 && this.props.allowCameraCapture && this.props.maxSelection === 1) {
       return <View>{this._renderCameraButton()}</View>
     }
     return(
       <Photo
-        { ...this.props.props }
+        { ...this.props }
         size={GRID_SIZE}
         containerStyle={{
           width: GRID_SIZE, height: GRID_SIZE,
@@ -232,16 +229,16 @@ class CameraRollList extends Component {
         isSelected={
           this.state.selected[item.node.image.uri] // renderItem depends on state
         }
-        onPress={ (uri, isSelected) => {
+        onPress={ (uri, isSelected): boolean => {
 
           if (this.props.maxSelection === 1) {
             if (this.props.outputImageAspectRatio === null) {
               // return the image immediately
               this.props.onSingleSelection(uri)
-              return
+              return false
             }
             this.props.onCrop(uri)
-            return
+            return false
           }
 
           if (!isSelected) {
@@ -250,7 +247,7 @@ class CameraRollList extends Component {
               delete selected[uri]
               return { selected }
             })
-            return
+            return true
           }
           let count = 0
           for (let key of Object.keys(this.state.selected)) {
@@ -271,7 +268,7 @@ class CameraRollList extends Component {
                 }
               ]
             )
-            return
+            return false
           }
           this.setState((oldState) => {
             return {
@@ -281,12 +278,24 @@ class CameraRollList extends Component {
               }
             }
           })
-          return
+          return true
         }}
       />
     )
   }
   render() {
+    let data: Array<object> = this.state.photos
+    if (this.props.allowCameraCapture && this.props.maxSelection === 1) {
+      data = [
+        {
+          node: {
+            image: {
+              uri: 'camera'
+            }
+          }
+        }, ...this.state.photos
+      ]
+    }
     return(
       <View style={{ flex: 1 }} >
         <FlatList
@@ -298,14 +307,7 @@ class CameraRollList extends Component {
           ListHeaderComponent={this._renderHeader}
           ListFooterComponent={this._renderFooter}
           renderItem={this._renderItem}
-          data={[
-            {
-              node: {
-                image: {
-                  uri: 'camera'
-                }
-              }
-            }, ...this.state.photos]}
+          data={data}
           keyExtractor={ (item, index) => item.node.image.uri }
           onEndReachedThreshold={0.5}
           onEndReached={ () => {

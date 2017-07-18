@@ -8,10 +8,6 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native'
-// import * as Color from '../utils/colors';
-// import { createIconSetFromFontello } from 'react-native-vector-icons';
-// import fontelloConfig from '../config.json';
-// const Icon = createIconSetFromFontello(fontelloConfig);
 
 export class Photo extends PureComponent {
   constructor(props) {
