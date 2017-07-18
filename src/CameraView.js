@@ -28,7 +28,6 @@ export class CameraView extends Component {
   _takePicture = () => {
     this._camera.capture({
       metadata: {},
-      jpegQuality: 90,
     })
     .then(({ path, size }) => {
       this.setState({

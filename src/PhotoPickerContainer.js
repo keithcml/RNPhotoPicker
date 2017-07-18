@@ -135,6 +135,7 @@ class PhotoPickerContainer extends Component {
               onResultCallback={(photos: Array<string>) => {
                 //console.log('you need to pass in result callback')
                 onFinish(photos)
+                this._dimissMyself()
               }}
             />
           </View>

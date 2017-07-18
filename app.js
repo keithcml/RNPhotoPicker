@@ -49,7 +49,7 @@ export default class RNPhotoPickerExample extends Component {
           ref={(picker => { this._picker = picker })}
           tintColor='red'
           maxSelection={1}
-          outputImageAspectRatio={1.5}
+          //outputImageAspectRatio={1.5}
           onResultCallback={(photos)=>{
             console.log(photos)
           }}

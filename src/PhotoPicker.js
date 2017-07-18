@@ -12,10 +12,12 @@ import {
   BackHandler,
   Platform,
   Modal,
+  Image,
 } from 'react-native'
 import { CameraView } from './CameraView'
 import { CropView } from './CropView'
 import CameraRollList from './CameraRollList'
+import ImageResizer from 'react-native-image-resizer'
 
 const { width } = Dimensions.get('window')
 
@@ -35,12 +37,57 @@ class PhotoPicker extends Component {
     this.state = {
       isCroppingPhoto: false,
       isTakingPhoto: false,
-      cropImageUri: null,
+      cropImageUri: '',
       results: [],
       selectedPhotos: {},
       capturedPhoto: '',
       croppedPhoto: '',
     }
+  }
+
+  _processBeforeFinishing = (photoURIs) => {
+    const compressOptions = { ...defaultOutputSettings, ...this.props.outputSettings }
+    if (compressOptions.noCompression) {
+      return
+    }
+    const compressImage = (imageUri) => {
+      return(
+        ImageResizer.createResizedImage(
+          imageUri,
+          compressOptions.maximumWidth,
+          compressOptions.maximumHeight,
+          'JPEG',
+          compressOptions.JPEGCompressionQuality,
+          0,
+          null)
+        .then((resizedImageUri) => {
+          // resizeImageUri is the URI of the new image that can now be displayed, uploaded...
+          console.log(resizedImageUri)
+          return resizedImageUri
+        })
+        .catch((err) => {
+          throw(err)
+        })
+      )
+    }
+    async function loop(originalURIs) {
+      let uris = [];
+      for (let key of originalURIs) {
+        try {
+          const resizedImageUri = await compressImage(key);
+          uris = uris.concat(resizedImageUri);
+        }
+        catch (err) {
+          throw(err)
+        }
+      }
+      return uris
+    }
+    return(
+      loop(Object.keys(this.state.selected))
+      .then( res => res )
+      .catch( err => { throw(err) })
+    )
   }
 
   render() {
@@ -50,9 +97,17 @@ class PhotoPicker extends Component {
         <CameraRollList
           { ...this.props }
           onSingleSelection={ (singlePhoto: string) => {
-            this.props.onResultCallback([singlePhoto])
+            return(
+              this._processBeforeFinishing([singlePhoto])
+              .then( (processedURIs) => {
+                this.props.onResultCallback([processedURIs])
+              })
+              .catch( err => {
+                console.log(err)
+              })
+            )
           }}
-          onCrop={ (uri) => {
+          onCrop={ (uri: string) => {
             this.setState({
               isCroppingPhoto: true,
               cropImageUri: uri,
@@ -75,21 +130,29 @@ class PhotoPicker extends Component {
         >
           <CropView
             cropRatio={this.props.outputImageAspectRatio}
-            imageUri={this.state.cropImageUri}
+            cropImageUri={this.state.cropImageUri}
             {...this.props}
             onCloseCropping={() => {
               this.setState({
                 isCroppingPhoto: false,
-                cropImageUri: null,
+                cropImageUri: '',
               })
             }}
-            onFinishCropping={(base64Data) => {
+            onFinishCropping={(uri: string) => {
               this.setState({
                 isCroppingPhoto: false,
-                cropImageUri: null,
+                cropImageUri: '',
               })
-              // convert base64 to uri
-              //this.props.onResultCallback([singlePhoto])
+
+              return(
+                this._processBeforeFinishing([uri])
+                .then( (processedURIs) => {
+                  this.props.onResultCallback([processedURIs])
+                })
+                .catch( err => {
+                  console.log(err)
+                })
+              )
             }}
           />
         </Modal>
@@ -114,7 +177,15 @@ class PhotoPicker extends Component {
               this.setState({
                 isTakingPhoto: false,
               })
-              this.props.onResultCallback([uri])
+              return(
+                this._processBeforeFinishing([uri])
+                .then( (processedURIs) => {
+                  this.props.onResultCallback([processedURIs])
+                })
+                .catch( err => {
+                  console.log(err)
+                })
+              )
             }}
           />
         </Modal>
@@ -127,25 +198,32 @@ PhotoPicker.propTypes = {
   // global props
   tintColor: PropTypes.string,
   pickerContainer: PropTypes.object,
-  // picker props
   outputImageAspectRatio: PropTypes.number,
   allowCameraCapture: PropTypes.bool,
   maxSelection: PropTypes.number,
+  outputSettings: PropTypes.object,
   onResultCallback: PropTypes.func,
 }
 PhotoPicker.defaultProps = {
   // global props
   tintColor: 'white',
   pickerContainer: {},
-  // picker props
   // crop ratio, null to disable cropping
   outputImageAspectRatio: null,
   allowCameraCapture: true,
   // set 1 for single selection
   maxSelection: 1,
+  outputSettings: {},
   onResultCallback: (photos: Array<string>) => {},
 }
 export default PhotoPicker
+
+const defaultOutputSettings = {
+  noCompression: true,
+  JPEGCompressionQuality: 100,
+  maximumWidth: 1200,
+  maximumHeight: 1200,
+}
 
 const styles = StyleSheet.create({
   originalPickerContainer: {
@@ -153,4 +231,4 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: 'white',
   },
-});
+})
